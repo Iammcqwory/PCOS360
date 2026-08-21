@@ -41,15 +41,18 @@ PCOS360/
 │   ├── src/
 │   │   ├── api/                    # Axios API client (login, fetchDashboard, askCoach)
 │   │   ├── components/             # Reusable UI widgets (StatCard, etc.)
-│   │   ├── constants/              # Design tokens (oceanBlue, mint, typography)
+│   │   ├── context/                # React State Contexts
+│   │   │   ├── ThemeContext.tsx    # Dynamic Light & Dark theme provider
+│   │   │   └── UserContext.tsx     # Centralized reactive user profile & settings
 │   │   ├── navigation/             # Universal Router & Screen Switcher
-│   │   ├── screens/                # All 11 App Screens
+│   │   ├── screens/                # All 12 App Screens
 │   │   │   ├── SplashScreen.tsx    # Branded welcome hero & feature pillars
 │   │   │   ├── LoginScreen.tsx     # Credential authentication & password toggle
 │   │   │   ├── SignUpScreen.tsx    # Registration with PCOS goal selection
+│   │   │   ├── ProfileSettingsScreen.tsx # Comprehensive biometrics, goals & privacy
 │   │   │   ├── AuthScreen.tsx      # Fast unified auth widget
 │   │   │   ├── OnboardingScreen.tsx# Health baseline setup with progress
-│   │   │   ├── DashboardScreen.tsx # Health hub, priority action, checkable goals
+│   │   │   ├── DashboardScreen.tsx # Health hub, priority action, personalized greeting
 │   │   │   ├── AfricanMealPlannerScreen.tsx
 │   │   │   ├── AICoachScreen.tsx
 │   │   │   ├── PeriodTrackerScreen.tsx
