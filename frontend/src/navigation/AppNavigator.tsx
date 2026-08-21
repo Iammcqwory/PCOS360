@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform, ScrollView } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import { spacing, radius } from '../constants/theme';
 import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -14,6 +15,7 @@ import PeriodTrackerScreen from '../screens/PeriodTrackerScreen';
 import AfricanMealPlannerScreen from '../screens/AfricanMealPlannerScreen';
 import WaterTrackerScreen from '../screens/WaterTrackerScreen';
 import AICoachScreen from '../screens/AICoachScreen';
+import ProfileSettingsScreen from '../screens/ProfileSettingsScreen';
 
 type ScreenName =
   | 'Splash'
@@ -27,7 +29,8 @@ type ScreenName =
   | 'PeriodTracker'
   | 'AfricanMealPlanner'
   | 'WaterTracker'
-  | 'AICoach';
+  | 'AICoach'
+  | 'ProfileSettings';
 
 interface ScreenState {
   name: ScreenName;
@@ -47,10 +50,12 @@ const SCREEN_TITLES: Record<ScreenName, string> = {
   AfricanMealPlanner: 'African Meal Planner',
   WaterTracker: 'Water Intake Tracker',
   AICoach: 'AI PCOS Lifestyle Coach',
+  ProfileSettings: 'Profile & Settings',
 };
 
 export default function AppNavigator() {
   const { colors, mode, toggleTheme } = useTheme();
+  const { user } = useUser();
   const [history, setHistory] = useState<ScreenState[]>([{ name: 'Splash' }]);
 
   const current = history[history.length - 1] || { name: 'Splash' };
@@ -105,11 +110,15 @@ export default function AppNavigator() {
         return <WaterTrackerScreen />;
       case 'AICoach':
         return <AICoachScreen />;
+      case 'ProfileSettings':
+        return <ProfileSettingsScreen navigation={navigationProp as any} route={routeProp as any} />;
       case 'Dashboard':
       default:
         return <DashboardScreen navigation={navigationProp as any} route={routeProp as any} />;
     }
   };
+
+  const userDisplayName = user.name ? user.name.split(' ')[0] : 'Account';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -237,18 +246,23 @@ export default function AppNavigator() {
                 </Text>
               </TouchableOpacity>
 
-              {/* Account / Exit to Splash Button */}
+              {/* Profile & Settings Button */}
               <TouchableOpacity
-                onPress={() => navigate('Splash')}
+                onPress={() => navigate('ProfileSettings')}
                 style={[
                   styles.accountBtn,
                   {
-                    backgroundColor: colors.badgeBg,
+                    backgroundColor: current.name === 'ProfileSettings' ? colors.primary : colors.badgeBg,
                   },
                 ]}
               >
-                <Text style={[styles.accountBtnText, { color: colors.badgeText }]}>
-                  👤 Account
+                <Text
+                  style={[
+                    styles.accountBtnText,
+                    { color: current.name === 'ProfileSettings' ? colors.textInverse : colors.badgeText },
+                  ]}
+                >
+                  👤 {userDisplayName}
                 </Text>
               </TouchableOpacity>
             </View>

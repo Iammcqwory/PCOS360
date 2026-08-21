@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import { spacing, radius } from '../constants/theme';
 import { RootStackParamList } from '../types';
 import { login } from '../api/api';
@@ -9,20 +10,21 @@ import { login } from '../api/api';
 type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
 const PCOS_GOALS = [
-  { id: 'cycle', label: '🩸 Regulate Cycle & Periods' },
-  { id: 'insulin', label: '⚖️ Manage Insulin & Weight' },
-  { id: 'skin', label: '🌿 Reduce Acne & Bloat' },
-  { id: 'fertility', label: '👶 Fertility & Conception' },
+  { id: 'Regulate Cycle & Periods', label: '🩸 Regulate Cycle & Periods' },
+  { id: 'Manage Insulin & Weight', label: '⚖️ Manage Insulin & Weight' },
+  { id: 'Reduce Acne & Bloat', label: '🌿 Reduce Acne & Bloat' },
+  { id: 'Fertility & Conception', label: '👶 Fertility & Conception' },
 ];
 
 export default function SignUpScreen({ navigation }: Props) {
   const { colors, mode, toggleTheme } = useTheme();
+  const { updateProfile } = useUser();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [selectedGoal, setSelectedGoal] = useState('cycle');
+  const [selectedGoal, setSelectedGoal] = useState('Manage Insulin & Weight');
   const [agreed, setAgreed] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -56,8 +58,14 @@ export default function SignUpScreen({ navigation }: Props) {
     } catch {
       // Continue gracefully even if offline
     }
+    updateProfile({
+      name: name.trim(),
+      email: email.trim(),
+      primaryGoal: selectedGoal,
+      isGuest: false,
+    });
     setLoading(false);
-    navigation.replace('Onboarding', { email, name });
+    navigation.replace('Onboarding', { email: email.trim(), name: name.trim() });
   };
 
   return (

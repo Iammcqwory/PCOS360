@@ -39,5 +39,6 @@ export type RootStackParamList = {
   AfricanMealPlanner: undefined;
   WaterTracker: undefined;
   AICoach: undefined;
+  ProfileSettings: undefined;
 };
 

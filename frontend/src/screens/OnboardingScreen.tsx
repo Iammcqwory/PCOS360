@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, StyleSheet, Platform, ActivityIndicator } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import { spacing, radius } from '../constants/theme';
 import { RootStackParamList } from '../types';
 import { submitOnboarding } from '../api/api';
@@ -18,6 +19,7 @@ const DIET_OPTIONS = [
 
 export default function OnboardingScreen({ navigation, route }: Props) {
   const { colors } = useTheme();
+  const { updateProfile } = useUser();
   const { email, name } = route.params || { email: '', name: 'Friend' };
 
   const [age, setAge] = useState('26');
@@ -47,6 +49,18 @@ export default function OnboardingScreen({ navigation, route }: Props) {
     } catch {
       // Allow progression even if backend offline
     }
+    updateProfile({
+      name,
+      email,
+      age: Number(age) || 26,
+      heightCm: Number(heightCm) || 165,
+      weightKg: Number(weightKg) || 70,
+      waistCm: Number(waistCm) || 84,
+      diagnosedPCOS,
+      tryingToConceive: trying,
+      dietStyle,
+      isGuest: false,
+    });
     setSavedSuccess(true);
     setTimeout(() => {
       navigation.replace('Dashboard');

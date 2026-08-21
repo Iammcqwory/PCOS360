@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Platform, ActivityIndicator } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTheme } from '../context/ThemeContext';
+import { useUser } from '../context/UserContext';
 import { spacing, radius } from '../constants/theme';
 import StatCard from '../components/StatCard';
 import { RootStackParamList } from '../types';
@@ -25,14 +26,25 @@ const INITIAL_GOALS: GoalItem[] = [
 
 export default function DashboardScreen({ navigation }: Props) {
   const { colors } = useTheme();
+  const { user } = useUser();
 
-  const [weight, setWeight] = useState('70 kg');
-  const [waist, setWaist] = useState('84 cm');
-  const [bmi, setBmi] = useState('24.1');
+  const [weight, setWeight] = useState(`${user.weightKg} kg`);
+  const [waist, setWaist] = useState(`${user.waistCm} cm`);
+  const [bmi, setBmi] = useState(
+    user.heightCm > 0 ? (user.weightKg / ((user.heightCm / 100) * (user.heightCm / 100))).toFixed(1) : '24.1'
+  );
   const [cycleDay, setCycleDay] = useState('12');
   const [wellnessScore, setWellnessScore] = useState(78);
   const [goals, setGoals] = useState<GoalItem[]>(INITIAL_GOALS);
   const [showScoreInfo, setShowScoreInfo] = useState(false);
+
+  useEffect(() => {
+    setWeight(`${user.weightKg} kg`);
+    setWaist(`${user.waistCm} cm`);
+    if (user.heightCm > 0 && user.weightKg > 0) {
+      setBmi((user.weightKg / ((user.heightCm / 100) * (user.heightCm / 100))).toFixed(1));
+    }
+  }, [user.weightKg, user.waistCm, user.heightCm]);
 
   useEffect(() => {
     let isMounted = true;
@@ -40,16 +52,13 @@ export default function DashboardScreen({ navigation }: Props) {
       try {
         const result = await fetchDashboard();
         if (result && isMounted) {
-          if (result.weight) setWeight(result.weight);
-          if (result.waist) setWaist(result.waist);
-          if (result.bmi) setBmi(result.bmi);
           if (result.daysSinceLastPeriod || result.daysSincePeriod) {
             setCycleDay((result.daysSinceLastPeriod || result.daysSincePeriod).toString());
           }
           if (result.wellnessScore) setWellnessScore(result.wellnessScore);
         }
       } catch {
-        // Fallback gracefully to initial mock data
+        // Fallback gracefully
       }
     };
     load();
@@ -67,11 +76,31 @@ export default function DashboardScreen({ navigation }: Props) {
   const completedCount = goals.filter(g => g.completed).length;
   const goalPercentage = Math.round((completedCount / goals.length) * 100);
 
+  const firstName = user.name.split(' ')[0] || 'Friend';
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={styles.content}
     >
+      {/* 🌸 User Greeting Bar */}
+      <View style={styles.userGreetingRow}>
+        <View>
+          <Text style={[styles.greetingTitle, { color: colors.textPrimary }]}>
+            Hello, {firstName} 👋
+          </Text>
+          <Text style={[styles.greetingSubtitle, { color: colors.textMuted }]}>
+            Focus: <Text style={{ color: colors.primary, fontWeight: '700' }}>{user.primaryGoal}</Text> • {user.dietStyle}
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ProfileSettings')}
+          style={[styles.profilePill, { backgroundColor: colors.surface, borderColor: colors.border }]}
+        >
+          <Text style={[styles.profilePillText, { color: colors.primary }]}>⚙️ Settings</Text>
+        </TouchableOpacity>
+      </View>
+
       {/* 🌟 1. HERO: Promoted Daily Action Card */}
       <View
         style={[
@@ -388,6 +417,32 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
     paddingBottom: spacing.xxl,
+  },
+  userGreetingRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  greetingTitle: {
+    fontSize: 22,
+    fontWeight: '900',
+    letterSpacing: -0.3,
+  },
+  greetingSubtitle: {
+    fontSize: 13,
+    marginTop: 2,
+  },
+  profilePill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    ...Platform.select({ web: { cursor: 'pointer' } }) as any,
+  },
+  profilePillText: {
+    fontSize: 12,
+    fontWeight: '800',
   },
   heroActionCard: {
     borderRadius: radius.lg,
