@@ -2,6 +2,9 @@
 
 *Hey Brian (@iammcqwory)! Welcome to the comprehensive engineering guide for **PCOS360** — an AI-powered holistic wellness companion designed specifically for African women managing Polycystic Ovary Syndrome (PCOS).*
 
+- 🌐 **Live Web Application**: **[https://pcos360.vercel.app](https://pcos360.vercel.app)**
+- 🐙 **GitHub Repository**: **[https://github.com/Iammcqwory/PCOS360](https://github.com/Iammcqwory/PCOS360)**
+
 ---
 
 ## 🏗️ 1. High-Level Architecture & Mental Model
