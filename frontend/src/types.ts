@@ -27,6 +27,9 @@ export type SymptomLog = {
 };
 
 export type RootStackParamList = {
+  Splash: undefined;
+  Login: undefined;
+  SignUp: undefined;
   Auth: undefined;
   Onboarding: { email: string; name: string };
   Dashboard: undefined;
@@ -37,3 +40,4 @@ export type RootStackParamList = {
   WaterTracker: undefined;
   AICoach: undefined;
 };
+

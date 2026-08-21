@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform, ScrollView } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { spacing, radius } from '../constants/theme';
+import SplashScreen from '../screens/SplashScreen';
+import LoginScreen from '../screens/LoginScreen';
+import SignUpScreen from '../screens/SignUpScreen';
 import AuthScreen from '../screens/AuthScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import DashboardScreen from '../screens/DashboardScreen';
@@ -13,6 +16,9 @@ import WaterTrackerScreen from '../screens/WaterTrackerScreen';
 import AICoachScreen from '../screens/AICoachScreen';
 
 type ScreenName =
+  | 'Splash'
+  | 'Login'
+  | 'SignUp'
   | 'Dashboard'
   | 'Auth'
   | 'Onboarding'
@@ -29,6 +35,9 @@ interface ScreenState {
 }
 
 const SCREEN_TITLES: Record<ScreenName, string> = {
+  Splash: 'PCOS360 Welcome',
+  Login: 'Sign In',
+  SignUp: 'Create Account',
   Dashboard: 'PCOS360 Dashboard',
   Auth: 'Sign In / Sign Up',
   Onboarding: 'Personal Profile Setup',
@@ -42,9 +51,9 @@ const SCREEN_TITLES: Record<ScreenName, string> = {
 
 export default function AppNavigator() {
   const { colors, mode, toggleTheme } = useTheme();
-  const [history, setHistory] = useState<ScreenState[]>([{ name: 'Dashboard' }]);
+  const [history, setHistory] = useState<ScreenState[]>([{ name: 'Splash' }]);
 
-  const current = history[history.length - 1] || { name: 'Dashboard' };
+  const current = history[history.length - 1] || { name: 'Splash' };
 
   const navigate = (name: ScreenName, params?: any) => {
     setHistory(prev => [...prev, { name, params }]);
@@ -70,8 +79,16 @@ export default function AppNavigator() {
     params: current.params || {},
   };
 
+  const isAuthOrLanding = current.name === 'Splash' || current.name === 'Login' || current.name === 'SignUp';
+
   const renderActiveScreen = () => {
     switch (current.name) {
+      case 'Splash':
+        return <SplashScreen navigation={navigationProp as any} route={routeProp as any} />;
+      case 'Login':
+        return <LoginScreen navigation={navigationProp as any} route={routeProp as any} />;
+      case 'SignUp':
+        return <SignUpScreen navigation={navigationProp as any} route={routeProp as any} />;
       case 'Auth':
         return <AuthScreen navigation={navigationProp as any} route={routeProp as any} />;
       case 'Onboarding':
@@ -96,145 +113,162 @@ export default function AppNavigator() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* 🌸 Universal Top Header */}
-      <View
-        style={[
-          styles.header,
-          {
-            backgroundColor: colors.surface,
-            borderBottomColor: colors.border,
-            shadowColor: colors.cardShadow,
-          },
-        ]}
-      >
-        <View style={styles.headerContent}>
-          {/* Logo */}
-          <TouchableOpacity
-            onPress={() => navigate('Dashboard')}
-            style={styles.logoContainer}
-          >
-            <Text style={[styles.logoText, { color: colors.primary }]}>
-              🌸 PCOS360
-            </Text>
-          </TouchableOpacity>
+      {/* 🌸 Top Header (Only displayed when inside the app dashboard/trackers) */}
+      {!isAuthOrLanding && (
+        <View
+          style={[
+            styles.header,
+            {
+              backgroundColor: colors.surface,
+              borderBottomColor: colors.border,
+              shadowColor: colors.cardShadow,
+            },
+          ]}
+        >
+          <View style={styles.headerContent}>
+            {/* Logo */}
+            <TouchableOpacity
+              onPress={() => navigate('Dashboard')}
+              style={styles.logoContainer}
+            >
+              <Text style={[styles.logoText, { color: colors.primary }]}>
+                🌸 PCOS360
+              </Text>
+            </TouchableOpacity>
 
-          {/* Navigation Links & Theme Switcher */}
-          <View style={styles.navRightGroup}>
-            <View style={styles.navLinks}>
-              <TouchableOpacity
-                onPress={() => navigate('Dashboard')}
-                style={[
-                  styles.navChip,
-                  {
-                    backgroundColor: current.name === 'Dashboard' ? colors.primary : colors.surfaceSubtle,
-                    borderColor: current.name === 'Dashboard' ? colors.primary : colors.border,
-                  },
-                ]}
-              >
-                <Text
+            {/* Navigation Links & Theme Switcher */}
+            <View style={styles.navRightGroup}>
+              <View style={styles.navLinks}>
+                <TouchableOpacity
+                  onPress={() => navigate('Dashboard')}
                   style={[
-                    styles.navChipText,
-                    { color: current.name === 'Dashboard' ? colors.textInverse : colors.textPrimary },
+                    styles.navChip,
+                    {
+                      backgroundColor: current.name === 'Dashboard' ? colors.primary : colors.surfaceSubtle,
+                      borderColor: current.name === 'Dashboard' ? colors.primary : colors.border,
+                    },
                   ]}
                 >
-                  Dashboard
+                  <Text
+                    style={[
+                      styles.navChipText,
+                      { color: current.name === 'Dashboard' ? colors.textInverse : colors.textPrimary },
+                    ]}
+                  >
+                    Dashboard
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => navigate('AfricanMealPlanner')}
+                  style={[
+                    styles.navChip,
+                    {
+                      backgroundColor: current.name === 'AfricanMealPlanner' ? colors.primary : colors.surfaceSubtle,
+                      borderColor: current.name === 'AfricanMealPlanner' ? colors.primary : colors.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.navChipText,
+                      { color: current.name === 'AfricanMealPlanner' ? colors.textInverse : colors.textPrimary },
+                    ]}
+                  >
+                    Meal Plan
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => navigate('AICoach')}
+                  style={[
+                    styles.navChip,
+                    {
+                      backgroundColor: current.name === 'AICoach' ? colors.primary : colors.surfaceSubtle,
+                      borderColor: current.name === 'AICoach' ? colors.primary : colors.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.navChipText,
+                      { color: current.name === 'AICoach' ? colors.textInverse : colors.textPrimary },
+                    ]}
+                  >
+                    AI Coach
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => navigate('SymptomTracker')}
+                  style={[
+                    styles.navChip,
+                    {
+                      backgroundColor: current.name === 'SymptomTracker' ? colors.primary : colors.surfaceSubtle,
+                      borderColor: current.name === 'SymptomTracker' ? colors.primary : colors.border,
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.navChipText,
+                      { color: current.name === 'SymptomTracker' ? colors.textInverse : colors.textPrimary },
+                    ]}
+                  >
+                    Symptoms
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* 🌓 Dark/Light Mode Switcher */}
+              <TouchableOpacity
+                onPress={toggleTheme}
+                style={[
+                  styles.themeToggleBtn,
+                  {
+                    backgroundColor: colors.surfaceSubtle,
+                    borderColor: colors.border,
+                  },
+                ]}
+                accessibilityLabel="Toggle Dark Mode"
+              >
+                <Text style={[styles.themeToggleText, { color: colors.textPrimary }]}>
+                  {mode === 'dark' ? '☀️' : '🌙'}
                 </Text>
               </TouchableOpacity>
 
+              {/* Account / Exit to Splash Button */}
               <TouchableOpacity
-                onPress={() => navigate('AfricanMealPlanner')}
+                onPress={() => navigate('Splash')}
                 style={[
-                  styles.navChip,
+                  styles.accountBtn,
                   {
-                    backgroundColor: current.name === 'AfricanMealPlanner' ? colors.primary : colors.surfaceSubtle,
-                    borderColor: current.name === 'AfricanMealPlanner' ? colors.primary : colors.border,
+                    backgroundColor: colors.badgeBg,
                   },
                 ]}
               >
-                <Text
-                  style={[
-                    styles.navChipText,
-                    { color: current.name === 'AfricanMealPlanner' ? colors.textInverse : colors.textPrimary },
-                  ]}
-                >
-                  Meal Plan
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => navigate('AICoach')}
-                style={[
-                  styles.navChip,
-                  {
-                    backgroundColor: current.name === 'AICoach' ? colors.primary : colors.surfaceSubtle,
-                    borderColor: current.name === 'AICoach' ? colors.primary : colors.border,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.navChipText,
-                    { color: current.name === 'AICoach' ? colors.textInverse : colors.textPrimary },
-                  ]}
-                >
-                  AI Coach
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => navigate('SymptomTracker')}
-                style={[
-                  styles.navChip,
-                  {
-                    backgroundColor: current.name === 'SymptomTracker' ? colors.primary : colors.surfaceSubtle,
-                    borderColor: current.name === 'SymptomTracker' ? colors.primary : colors.border,
-                  },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.navChipText,
-                    { color: current.name === 'SymptomTracker' ? colors.textInverse : colors.textPrimary },
-                  ]}
-                >
-                  Symptoms
+                <Text style={[styles.accountBtnText, { color: colors.badgeText }]}>
+                  👤 Account
                 </Text>
               </TouchableOpacity>
             </View>
-
-            {/* 🌓 Dark/Light Mode Switcher Button */}
-            <TouchableOpacity
-              onPress={toggleTheme}
-              style={[
-                styles.themeToggleBtn,
-                {
-                  backgroundColor: colors.surfaceSubtle,
-                  borderColor: colors.border,
-                },
-              ]}
-              accessibilityLabel="Toggle Dark Mode"
-            >
-              <Text style={[styles.themeToggleText, { color: colors.textPrimary }]}>
-                {mode === 'dark' ? '☀️ Light' : '🌙 Dark'}
-              </Text>
-            </TouchableOpacity>
           </View>
+
+          {/* Sub-header with back button when on sub-screens */}
+          {current.name !== 'Dashboard' && (
+            <View style={[styles.subHeader, { borderTopColor: colors.border }]}>
+              <TouchableOpacity onPress={goBack} style={styles.backButton}>
+                <Text style={[styles.backButtonText, { color: colors.primary }]}>
+                  ← Back to Dashboard
+                </Text>
+              </TouchableOpacity>
+              <Text style={[styles.screenTitle, { color: colors.textSecondary }]}>
+                {SCREEN_TITLES[current.name]}
+              </Text>
+            </View>
+          )}
         </View>
-
-        {/* Sub-header with back button when on sub-screens */}
-        {current.name !== 'Dashboard' && (
-          <View style={[styles.subHeader, { borderTopColor: colors.border }]}>
-            <TouchableOpacity onPress={goBack} style={styles.backButton}>
-              <Text style={[styles.backButtonText, { color: colors.primary }]}>
-                ← Back to Dashboard
-              </Text>
-            </TouchableOpacity>
-            <Text style={[styles.screenTitle, { color: colors.textSecondary }]}>
-              {SCREEN_TITLES[current.name]}
-            </Text>
-          </View>
-        )}
-      </View>
+      )}
 
       {/* Screen Body */}
       <View style={styles.screenWrapper}>
@@ -282,7 +316,7 @@ const styles = StyleSheet.create({
   navRightGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
     flexWrap: 'wrap',
   },
   navLinks: {
@@ -304,7 +338,7 @@ const styles = StyleSheet.create({
   },
   themeToggleBtn: {
     paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     borderRadius: radius.full,
     borderWidth: 1,
     alignItems: 'center',
@@ -312,6 +346,15 @@ const styles = StyleSheet.create({
     ...Platform.select({ web: { cursor: 'pointer' } }) as any,
   },
   themeToggleText: {
+    fontSize: 13,
+  },
+  accountBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: radius.full,
+    ...Platform.select({ web: { cursor: 'pointer' } }) as any,
+  },
+  accountBtnText: {
     fontSize: 12,
     fontWeight: '800',
   },
