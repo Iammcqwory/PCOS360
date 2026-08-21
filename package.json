@@ -9,7 +9,8 @@
   "scripts": {
     "start:frontend": "yarn workspace pcos360-frontend start",
     "start:backend": "yarn workspace pcos360-backend dev",
-    "dev": "concurrently \"yarn start:frontend\" \"yarn start:backend\""
+    "dev": "concurrently \"yarn start:frontend\" \"yarn start:backend\"",
+    "build": "cd frontend && node ../node_modules/expo/bin/cli export:web"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

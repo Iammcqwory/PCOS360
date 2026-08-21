@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "buildCommand": "cd frontend && node ../node_modules/expo/bin/cli export:web",
+  "outputDirectory": "web-build",
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
