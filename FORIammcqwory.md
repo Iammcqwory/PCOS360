@@ -43,10 +43,13 @@ PCOS360/
 │   │   ├── components/             # Reusable UI widgets (StatCard, etc.)
 │   │   ├── constants/              # Design tokens (oceanBlue, mint, typography)
 │   │   ├── navigation/             # Universal Router & Screen Switcher
-│   │   ├── screens/                # All 9 App Screens
-│   │   │   ├── AuthScreen.tsx
-│   │   │   ├── OnboardingScreen.tsx
-│   │   │   ├── DashboardScreen.tsx
+│   │   ├── screens/                # All 11 App Screens
+│   │   │   ├── SplashScreen.tsx    # Branded welcome hero & feature pillars
+│   │   │   ├── LoginScreen.tsx     # Credential authentication & password toggle
+│   │   │   ├── SignUpScreen.tsx    # Registration with PCOS goal selection
+│   │   │   ├── AuthScreen.tsx      # Fast unified auth widget
+│   │   │   ├── OnboardingScreen.tsx# Health baseline setup with progress
+│   │   │   ├── DashboardScreen.tsx # Health hub, priority action, checkable goals
 │   │   │   ├── AfricanMealPlannerScreen.tsx
 │   │   │   ├── AICoachScreen.tsx
 │   │   │   ├── PeriodTrackerScreen.tsx
