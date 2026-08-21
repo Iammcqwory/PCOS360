@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && node ../node_modules/expo/bin/cli export:web",
-  "outputDirectory": "web-build",
+  "buildCommand": "cd frontend && node ../node_modules/expo/bin/cli export:web && (cp -r ../web-build . 2>/dev/null || true) && (cp -r web-build ../web-build 2>/dev/null || true)",
+  "outputDirectory": "frontend/web-build",
   "routes": [
     {
       "handle": "filesystem"
