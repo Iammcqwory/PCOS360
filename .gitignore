@@ -1,0 +1,14 @@
+node_modules/
+.expo/
+.expo-shared/
+*.log
+*.env
+dist/
+build/
+
+frontend/.expo/
+frontend/node_modules/
+frontend/web-build/
+
+backend/node_modules/
+backend/dist/
